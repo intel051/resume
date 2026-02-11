@@ -1,347 +1,298 @@
-import React, { useState } from 'react';
-import { Mail, Phone, Github, Plus, Trash2, Download, MinusCircle } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이력서 에디터</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        
+        :root {
+            --toss-blue: #3182f6;
+            --toss-gray-dark: #191f28;
+            --toss-gray-medium: #4e5968;
+            --toss-gray-light: #8b95a1;
+            --toss-bg: #f2f4f6;
+        }
 
-const App = () => {
-  const [profile, setProfile] = useState({
-    name: "강병주",
-    role: "Derivatives Markets Operation Manager",
-    email: "career@toss.im",
-    phone: "010-0000-0000",
-    github: "github.com/toss",
-    summary: "복잡한 금융 경험을 사용자 중심으로 단순화하는 데 몰입합니다. 수치에 기반한 설계로 비즈니스 성과를 증명합니다."
-  });
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: var(--toss-bg);
+            color: var(--toss-gray-dark);
+            letter-spacing: -0.01em;
+        }
 
-  const [experiences, setExperiences] = useState([
-    {
-      company: "토스증권",
-      period: "2022.03 - 현재",
-      role: "Product Designer",
-      achievements: [
-        "주식 홈 개편을 통해 일간 활성 사용자(DAU) 20% 증가 견인",
-        "디자인 시스템 고도화로 컴포넌트 재사용률 40% 개선"
-      ]
-    }
-  ]);
+        .resume-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
 
-  const [skills, setSkills] = useState([
-    { category: "Design", items: "Figma, Framer, Protopie" },
-    { category: "Development", items: "React, Tailwind CSS" }
-  ]);
-
-  const [education, setEducation] = useState([
-    { school: "토스대학교", major: "산업디자인학과", period: "2016.03 - 2022.02" }
-  ]);
-
-  const handleProfileChange = (field, value) => {
-    setProfile(prev => ({ ...prev, [field]: value }));
-  };
-
-  const addExperience = () => {
-    setExperiences([...experiences, { company: "", period: "", role: "", achievements: [""] }]);
-  };
-
-  const updateExperience = (index, field, value) => {
-    const newExp = [...experiences];
-    newExp[index][field] = value;
-    setExperiences(newExp);
-  };
-
-  const removeExperience = (index) => {
-    setExperiences(experiences.filter((_, i) => i !== index));
-  };
-
-  const addAchievement = (expIndex) => {
-    const newExp = [...experiences];
-    newExp[expIndex].achievements.push("");
-    setExperiences(newExp);
-  };
-
-  const updateAchievement = (expIndex, achIndex, value) => {
-    const newExp = [...experiences];
-    newExp[expIndex].achievements[achIndex] = value;
-    setExperiences(newExp);
-  };
-
-  const removeAchievement = (expIndex, achIndex) => {
-    const newExp = [...experiences];
-    newExp[expIndex].achievements = newExp[expIndex].achievements.filter((_, i) => i !== achIndex);
-    setExperiences(newExp);
-  };
-
-  const addSkill = () => {
-    setSkills([...skills, { category: "", items: "" }]);
-  };
-
-  const updateSkill = (index, field, value) => {
-    const newSkills = [...skills];
-    newSkills[index][field] = value;
-    setSkills(newSkills);
-  };
-
-  const removeSkill = (index) => {
-    setSkills(skills.filter((_, i) => i !== index));
-  };
-
-  const addEducation = () => {
-    setEducation([...education, { school: "", major: "", period: "" }]);
-  };
-
-  const updateEducation = (index, field, value) => {
-    const newEdu = [...education];
-    newEdu[index][field] = value;
-    setEducation(newEdu);
-  };
-
-  const removeEducation = (index) => {
-    setEducation(education.filter((_, i) => i !== index));
-  };
-
-  return (
-    <div className="min-h-screen bg-[#f2f4f6] font-['Pretendard'] text-[#191f28] p-4 md:p-8">
-      <style>
-        {`
-          @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-          body { font-family: 'Pretendard', sans-serif; letter-spacing: -0.01em; }
-          
-          input, textarea {
-            border: 1px solid transparent;
-            width: 100%;
-            transition: all 0.15s ease;
-            border-radius: 4px;
-            padding: 2px 4px;
-            margin-left: -4px;
-          }
-          input:hover, textarea:hover {
-            background-color: #f9fafb;
-          }
-          input:focus, textarea:focus {
+        [contenteditable="true"] {
             outline: none;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        [contenteditable="true"]:hover {
+            background-color: #f9fafb;
+        }
+
+        [contenteditable="true"]:focus {
             background-color: white;
-            border-color: #3182f6;
-          }
+            box-shadow: 0 0 0 2px rgba(49, 130, 246, 0.1);
+        }
 
-          @media print {
-            .no-print { display: none !important; }
-            body { background-color: white; padding: 0; }
-            .print-container { 
-              box-shadow: none !important; 
-              margin: 0 !important; 
-              width: 100% !important;
-              max-width: 100% !important;
-              border-radius: 0 !important;
-            }
-            input, textarea { 
-              border: none !important; 
-              background: transparent !important;
-              padding: 0 !important;
-              margin: 0 !important;
-              resize: none !important;
-            }
-          }
-        `}
-      </style>
+        .no-print-btn {
+            transition: all 0.2s;
+        }
 
-      <div className="fixed top-4 right-4 z-50 no-print">
-        <button 
-          onClick={() => window.print()}
-          className="flex items-center gap-2 bg-[#3182f6] text-white px-5 py-2.5 rounded-xl font-bold hover:bg-[#1b64da] transition-all shadow-lg"
-        >
-          <Download size={16} />
-          PDF로 저장하기
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background-color: white;
+                margin: 0;
+                padding: 0;
+            }
+            .resume-container {
+                margin: 0;
+                box-shadow: none;
+                border-radius: 0;
+                max-width: 100%;
+            }
+            [contenteditable="true"]:hover {
+                background-color: transparent;
+            }
+        }
+
+        .achievement-item:hover .delete-achievement {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- Floating Action Button -->
+    <div class="fixed top-6 right-6 z-50 no-print">
+        <button onclick="window.print()" class="flex items-center gap-2 bg-[#3182f6] text-white px-6 py-3 rounded-2xl font-bold hover:bg-[#1b64da] shadow-lg no-print-btn">
+            <i data-lucide="download" class="w-5 h-5"></i>
+            PDF로 저장하기
         </button>
-      </div>
+    </div>
 
-      <div className="max-w-3xl mx-auto bg-white shadow-xl rounded-[24px] overflow-hidden print-container mt-8 mb-16">
-        {/* 인적사항 */}
-        <header className="px-8 pt-12 pb-8 md:px-12 border-b border-gray-50">
-          <div className="flex flex-col md:flex-row justify-between items-start gap-6">
-            <div className="flex-1 space-y-2">
-              <input 
-                className="text-4xl font-black tracking-tighter" 
-                value={profile.name} 
-                onChange={(e) => handleProfileChange('name', e.target.value)}
-              />
-              <input 
-                className="text-xl text-[#3182f6] font-bold" 
-                value={profile.role} 
-                onChange={(e) => handleProfileChange('role', e.target.value)}
-              />
+    <div class="resume-container print-container">
+        <!-- Header -->
+        <header class="px-8 pt-12 pb-8 md:px-12 border-b border-gray-50">
+            <div class="flex flex-col md:flex-row justify-between items-start gap-6">
+                <div class="flex-1">
+                    <h1 contenteditable="true" class="text-4xl font-black tracking-tighter mb-2">김토스</h1>
+                    <p contenteditable="true" class="text-xl text-[#3182f6] font-bold">Product Designer</p>
+                </div>
+                <div class="space-y-2 text-sm font-medium text-[#4e5968]">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="mail" class="w-4 h-4 text-[#adb5bd]"></i>
+                        <span contenteditable="true">career@toss.im</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="phone" class="w-4 h-4 text-[#adb5bd]"></i>
+                        <span contenteditable="true">010-0000-0000</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="github" class="w-4 h-4 text-[#adb5bd]"></i>
+                        <span contenteditable="true">github.com/toss</span>
+                    </div>
+                </div>
             </div>
-            <div className="w-full md:w-auto space-y-2 text-[#4e5968] font-medium pt-1">
-              <div className="flex items-center gap-2">
-                <Mail size={14} className="text-[#adb5bd]" />
-                <input className="text-sm" value={profile.email} onChange={(e) => handleProfileChange('email', e.target.value)} />
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone size={14} className="text-[#adb5bd]" />
-                <input className="text-sm" value={profile.phone} onChange={(e) => handleProfileChange('phone', e.target.value)} />
-              </div>
-              <div className="flex items-center gap-2">
-                <Github size={14} className="text-[#adb5bd]" />
-                <input className="text-sm" value={profile.github} onChange={(e) => handleProfileChange('github', e.target.value)} />
-              </div>
-            </div>
-          </div>
         </header>
 
-        <main className="px-8 py-10 md:px-12 space-y-12">
-          {/* 요약 */}
-          <section>
-            <h2 className="text-lg font-bold mb-3 text-[#191f28]">요약</h2>
-            <textarea 
-              rows="2"
-              className="text-base leading-relaxed text-[#333d4b] font-medium" 
-              value={profile.summary}
-              onChange={(e) => handleProfileChange('summary', e.target.value)}
-            />
-          </section>
+        <main class="px-8 py-10 md:px-12 space-y-12">
+            <!-- Summary -->
+            <section>
+                <h2 class="text-lg font-bold mb-3">요약</h2>
+                <div contenteditable="true" class="text-base leading-relaxed text-[#333d4b] font-medium">
+                    복잡한 금융 경험을 사용자 중심으로 단순화하는 데 몰입합니다. 수치에 기반한 설계로 비즈니스 성과를 증명합니다.
+                </div>
+            </section>
 
-          {/* 경력 사항 */}
-          <section>
-            <div className="flex justify-between items-end mb-6 border-b border-gray-100 pb-2">
-              <h2 className="text-lg font-bold text-[#191f28]">경력 사항</h2>
-              <button onClick={addExperience} className="no-print text-[#3182f6] font-bold text-xs hover:underline flex items-center gap-1">
-                <Plus size={14} /> 추가
-              </button>
-            </div>
-            
-            <div className="space-y-10">
-              {experiences.map((exp, idx) => (
-                <div key={idx} className="group relative">
-                  <button 
-                    onClick={() => removeExperience(idx)}
-                    className="absolute -left-10 top-0 no-print opacity-0 group-hover:opacity-100 p-2 text-red-400 hover:text-red-600 transition-all"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                  
-                  <div className="flex flex-col md:flex-row justify-between mb-3">
-                    <div className="flex-1">
-                      <input 
-                        className="text-lg font-bold" 
-                        placeholder="회사명" 
-                        value={exp.company} 
-                        onChange={(e) => updateExperience(idx, 'company', e.target.value)}
-                      />
-                      <input 
-                        className="text-sm text-[#4e5968] font-semibold" 
-                        placeholder="직무" 
-                        value={exp.role} 
-                        onChange={(e) => updateExperience(idx, 'role', e.target.value)}
-                      />
-                    </div>
-                    <input 
-                      className="text-right text-[#8b95a1] font-bold text-sm h-fit w-40 mt-1" 
-                      placeholder="YYYY.MM - YYYY.MM" 
-                      value={exp.period} 
-                      onChange={(e) => updateExperience(idx, 'period', e.target.value)}
-                    />
-                  </div>
-                  
-                  <ul className="space-y-2">
-                    {exp.achievements.map((ach, aIdx) => (
-                      <li key={aIdx} className="flex gap-3 items-start group/ach relative">
-                        <span className="mt-2.5 w-1 h-1 bg-[#3182f6] rounded-full shrink-0"></span>
-                        <div className="flex-1 flex items-center gap-2">
-                          <input 
-                            className="text-[#333d4b] text-sm leading-relaxed flex-1" 
-                            placeholder="상세 성과" 
-                            value={ach} 
-                            onChange={(e) => updateAchievement(idx, aIdx, e.target.value)}
-                          />
-                          <button 
-                            onClick={() => removeAchievement(idx, aIdx)}
-                            className="no-print opacity-0 group-hover/ach:opacity-100 text-gray-300 hover:text-red-500 transition-all"
-                          >
-                            <MinusCircle size={14} />
-                          </button>
-                        </div>
-                      </li>
-                    ))}
-                    <button 
-                      onClick={() => addAchievement(idx)}
-                      className="no-print mt-1 ml-4 text-xs font-bold text-[#adb5bd] hover:text-[#3182f6] flex items-center gap-1"
-                    >
-                      <Plus size={12} /> 성과 추가
+            <!-- Experience -->
+            <section id="experience-section">
+                <div class="flex justify-between items-end mb-6 border-b border-gray-100 pb-2">
+                    <h2 class="text-lg font-bold">경력 사항</h2>
+                    <button onclick="addExperience()" class="no-print text-[#3182f6] font-bold text-xs hover:underline flex items-center gap-1">
+                        <i data-lucide="plus" class="w-3 h-3"></i> 추가
                     </button>
-                  </ul>
                 </div>
-              ))}
-            </div>
-          </section>
+                
+                <div id="experience-list" class="space-y-10">
+                    <!-- Experience Item Template -->
+                    <div class="group relative experience-item">
+                        <button onclick="this.parentElement.remove()" class="absolute -left-10 top-0 no-print opacity-0 group-hover:opacity-100 p-2 text-red-400 hover:text-red-600 transition-all">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                        <div class="flex flex-col md:flex-row justify-between mb-3">
+                            <div class="flex-1">
+                                <h3 contenteditable="true" class="text-lg font-bold">토스증권</h3>
+                                <p contenteditable="true" class="text-sm text-[#4e5968] font-semibold">Product Designer</p>
+                            </div>
+                            <span contenteditable="true" class="text-right text-[#8b95a1] font-bold text-sm h-fit w-40 mt-1">2022.03 - 현재</span>
+                        </div>
+                        <ul class="space-y-2 achievement-list">
+                            <li class="flex gap-3 items-start group/ach achievement-item">
+                                <span class="mt-2.5 w-1 h-1 bg-[#3182f6] rounded-full shrink-0"></span>
+                                <span contenteditable="true" class="text-[#333d4b] text-sm leading-relaxed flex-1">주식 홈 개편을 통해 일간 활성 사용자(DAU) 20% 증가 견인</span>
+                                <button onclick="this.parentElement.remove()" class="no-print opacity-0 group-hover/ach:opacity-100 text-gray-300 hover:text-red-500 transition-all">
+                                    <i data-lucide="minus-circle" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </li>
+                        </ul>
+                        <button onclick="addAchievement(this)" class="no-print mt-2 ml-4 text-xs font-bold text-[#adb5bd] hover:text-[#3182f6] flex items-center gap-1">
+                            <i data-lucide="plus" class="w-3 h-3"></i> 성과 추가
+                        </button>
+                    </div>
+                </div>
+            </section>
 
-          {/* 기술 스택 */}
-          <section>
-            <div className="flex justify-between items-end mb-6 border-b border-gray-100 pb-2">
-              <h2 className="text-lg font-bold text-[#191f28]">보유 역량</h2>
-              <button onClick={addSkill} className="no-print text-[#3182f6] font-bold text-xs hover:underline flex items-center gap-1">
-                <Plus size={14} /> 추가
-              </button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-              {skills.map((skill, idx) => (
-                <div key={idx} className="group relative bg-[#f9fafb] p-4 rounded-xl">
-                  <button 
-                    onClick={() => removeSkill(idx)}
-                    className="absolute -right-2 -top-2 no-print opacity-0 group-hover:opacity-100 bg-white shadow rounded-full p-1 text-red-400"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                  <input 
-                    className="text-[10px] font-black text-[#8b95a1] uppercase tracking-wider mb-1 bg-transparent" 
-                    placeholder="CATEGORY" 
-                    value={skill.category} 
-                    onChange={(e) => updateSkill(idx, 'category', e.target.value)}
-                  />
-                  <textarea 
-                    rows="1"
-                    className="text-sm font-bold text-[#191f28] bg-transparent" 
-                    placeholder="기술 목록" 
-                    value={skill.items} 
-                    onChange={(e) => updateSkill(idx, 'items', e.target.value)}
-                  />
+            <!-- Skills -->
+            <section>
+                <div class="flex justify-between items-end mb-6 border-b border-gray-100 pb-2">
+                    <h2 class="text-lg font-bold">보유 역량</h2>
+                    <button onclick="addSkill()" class="no-print text-[#3182f6] font-bold text-xs hover:underline flex items-center gap-1">
+                        <i data-lucide="plus" class="w-3 h-3"></i> 추가
+                    </button>
                 </div>
-              ))}
-            </div>
-          </section>
+                <div id="skills-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="group relative bg-[#f9fafb] p-4 rounded-xl skill-item">
+                        <button onclick="this.parentElement.remove()" class="absolute -right-2 -top-2 no-print opacity-0 group-hover:opacity-100 bg-white shadow rounded-full p-1 text-red-400">
+                            <i data-lucide="trash-2" class="w-3 h-3"></i>
+                        </button>
+                        <p contenteditable="true" class="text-[10px] font-black text-[#8b95a1] uppercase tracking-wider mb-1">Design</p>
+                        <div contenteditable="true" class="text-sm font-bold text-[#191f28]">Figma, Framer, Protopie</div>
+                    </div>
+                </div>
+            </section>
 
-          {/* 학력 */}
-          <section>
-            <div className="flex justify-between items-end mb-6 border-b border-gray-100 pb-2">
-              <h2 className="text-lg font-bold text-[#191f28]">학력</h2>
-              <button onClick={addEducation} className="no-print text-[#3182f6] font-bold text-xs hover:underline flex items-center gap-1">
-                <Plus size={14} /> 추가
-              </button>
-            </div>
-            <div className="space-y-6">
-              {education.map((edu, idx) => (
-                <div key={idx} className="group relative flex flex-col md:flex-row justify-between items-start gap-2">
-                  <button 
-                    onClick={() => removeEducation(idx)}
-                    className="absolute -left-10 top-0 no-print opacity-0 group-hover:opacity-100 p-2 text-red-400"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                  <div className="flex-1">
-                    <input className="text-base font-bold" placeholder="학교명" value={edu.school} onChange={(e) => updateEducation(idx, 'school', e.target.value)} />
-                    <input className="text-sm text-[#4e5968]" placeholder="전공" value={edu.major} onChange={(e) => updateEducation(idx, 'major', e.target.value)} />
-                  </div>
-                  <input className="text-right text-[#8b95a1] font-bold text-sm w-40 mt-1" placeholder="YYYY.MM - YYYY.MM" value={edu.period} onChange={(e) => updateEducation(idx, 'period', e.target.value)} />
+            <!-- Education -->
+            <section>
+                <div class="flex justify-between items-end mb-6 border-b border-gray-100 pb-2">
+                    <h2 class="text-lg font-bold">학력</h2>
+                    <button onclick="addEducation()" class="no-print text-[#3182f6] font-bold text-xs hover:underline flex items-center gap-1">
+                        <i data-lucide="plus" class="w-3 h-3"></i> 추가
+                    </button>
                 </div>
-              ))}
-            </div>
-          </section>
+                <div id="education-list" class="space-y-6">
+                    <div class="group relative flex flex-col md:flex-row justify-between items-start gap-2 education-item">
+                        <button onclick="this.parentElement.remove()" class="absolute -left-10 top-0 no-print opacity-0 group-hover:opacity-100 p-2 text-red-400">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                        <div class="flex-1">
+                            <h3 contenteditable="true" class="text-base font-bold">토스대학교</h3>
+                            <p contenteditable="true" class="text-sm text-[#4e5968]">산업디자인학과 졸업</p>
+                        </div>
+                        <span contenteditable="true" class="text-right text-[#8b95a1] font-bold text-sm w-40 mt-1">2016.03 - 2022.02</span>
+                    </div>
+                </div>
+            </section>
         </main>
 
-        <footer className="bg-[#f9fafb] px-8 py-10 text-center">
-          <p className="text-[#8b95a1] text-xs font-semibold">
-            위 내용은 사실과 다름이 없음을 확인합니다.
-          </p>
+        <footer class="bg-[#f9fafb] px-8 py-10 text-center">
+            <p class="text-[#8b95a1] text-xs font-semibold">위 내용은 사실과 다름이 없음을 확인합니다.</p>
         </footer>
-      </div>
     </div>
-  );
-};
 
-export default App;
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Helper: Create achievement item
+        function createAchievement() {
+            const li = document.createElement('li');
+            li.className = 'flex gap-3 items-start group/ach achievement-item';
+            li.innerHTML = `
+                <span class="mt-2.5 w-1 h-1 bg-[#3182f6] rounded-full shrink-0"></span>
+                <span contenteditable="true" class="text-[#333d4b] text-sm leading-relaxed flex-1">새로운 성과를 입력하세요</span>
+                <button onclick="this.parentElement.remove()" class="no-print opacity-0 group-hover/ach:opacity-100 text-gray-300 hover:text-red-500 transition-all">
+                    <i data-lucide="minus-circle" class="w-3.5 h-3.5"></i>
+                </button>
+            `;
+            return li;
+        }
+
+        function addAchievement(btn) {
+            const list = btn.previousElementSibling;
+            const newItem = createAchievement();
+            list.appendChild(newItem);
+            lucide.createIcons();
+            newItem.querySelector('[contenteditable]').focus();
+        }
+
+        function addExperience() {
+            const container = document.getElementById('experience-list');
+            const div = document.createElement('div');
+            div.className = 'group relative experience-item';
+            div.innerHTML = `
+                <button onclick="this.parentElement.remove()" class="absolute -left-10 top-0 no-print opacity-0 group-hover:opacity-100 p-2 text-red-400 hover:text-red-600 transition-all">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+                <div class="flex flex-col md:flex-row justify-between mb-3">
+                    <div class="flex-1">
+                        <h3 contenteditable="true" class="text-lg font-bold">회사명</h3>
+                        <p contenteditable="true" class="text-sm text-[#4e5968] font-semibold">직무</p>
+                    </div>
+                    <span contenteditable="true" class="text-right text-[#8b95a1] font-bold text-sm h-fit w-40 mt-1">기간 입력</span>
+                </div>
+                <ul class="space-y-2 achievement-list"></ul>
+                <button onclick="addAchievement(this)" class="no-print mt-2 ml-4 text-xs font-bold text-[#adb5bd] hover:text-[#3182f6] flex items-center gap-1">
+                    <i data-lucide="plus" class="w-3 h-3"></i> 성과 추가
+                </button>
+            `;
+            container.appendChild(div);
+            addAchievement(div.querySelector('.no-print')); // 첫 성과 자동 추가
+            lucide.createIcons();
+        }
+
+        function addSkill() {
+            const container = document.getElementById('skills-list');
+            const div = document.createElement('div');
+            div.className = 'group relative bg-[#f9fafb] p-4 rounded-xl skill-item';
+            div.innerHTML = `
+                <button onclick="this.parentElement.remove()" class="absolute -right-2 -top-2 no-print opacity-0 group-hover:opacity-100 bg-white shadow rounded-full p-1 text-red-400">
+                    <i data-lucide="trash-2" class="w-3 h-3"></i>
+                </button>
+                <p contenteditable="true" class="text-[10px] font-black text-[#8b95a1] uppercase tracking-wider mb-1">CATEGORY</p>
+                <div contenteditable="true" class="text-sm font-bold text-[#191f28]">기술 목록</div>
+            `;
+            container.appendChild(div);
+            lucide.createIcons();
+        }
+
+        function addEducation() {
+            const container = document.getElementById('education-list');
+            const div = document.createElement('div');
+            div.className = 'group relative flex flex-col md:flex-row justify-between items-start gap-2 education-item';
+            div.innerHTML = `
+                <button onclick="this.parentElement.remove()" class="absolute -left-10 top-0 no-print opacity-0 group-hover:opacity-100 p-2 text-red-400">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+                <div class="flex-1">
+                    <h3 contenteditable="true" class="text-base font-bold">학교명</h3>
+                    <p contenteditable="true" class="text-sm text-[#4e5968]">전공</p>
+                </div>
+                <span contenteditable="true" class="text-right text-[#8b95a1] font-bold text-sm w-40 mt-1">기간</span>
+            `;
+            container.appendChild(div);
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>
 
