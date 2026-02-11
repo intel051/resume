@@ -4,25 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>이력서 에디터</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         
         :root {
             --toss-blue: #3182f6;
-            --toss-gray-dark: #191f28;
-            --toss-gray-medium: #4e5968;
-            --toss-gray-light: #8b95a1;
             --toss-bg: #f2f4f6;
         }
 
         body {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            font-family: 'Pretendard', sans-serif;
             background-color: var(--toss-bg);
-            color: var(--toss-gray-dark);
+            color: #191f28;
             letter-spacing: -0.01em;
         }
 
@@ -32,14 +27,13 @@
             background: white;
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            overflow: hidden;
         }
 
         [contenteditable="true"] {
             outline: none;
             padding: 2px 4px;
             border-radius: 4px;
-            transition: background-color 0.2s;
+            transition: background-color 0.15s;
         }
 
         [contenteditable="true"]:hover {
@@ -51,118 +45,71 @@
             box-shadow: 0 0 0 2px rgba(49, 130, 246, 0.1);
         }
 
-        .no-print-btn {
-            transition: all 0.2s;
-        }
-
         @media print {
-            .no-print {
-                display: none !important;
-            }
-            body {
-                background-color: white;
-                margin: 0;
-                padding: 0;
-            }
-            .resume-container {
-                margin: 0;
-                box-shadow: none;
-                border-radius: 0;
-                max-width: 100%;
-            }
-            [contenteditable="true"]:hover {
-                background-color: transparent;
-            }
-        }
-
-        .achievement-item:hover .delete-achievement {
-            opacity: 1;
+            .no-print { display: none !important; }
+            body { background-color: white; padding: 0; }
+            .resume-container { margin: 0; box-shadow: none; border-radius: 0; max-width: 100%; }
         }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
-    <!-- Floating Action Button -->
-    <div class="fixed top-6 right-6 z-50 no-print">
-        <button onclick="window.print()" class="flex items-center gap-2 bg-[#3182f6] text-white px-6 py-3 rounded-2xl font-bold hover:bg-[#1b64da] shadow-lg no-print-btn">
+    <div class="fixed top-6 right-6 z-50 no-print flex gap-3">
+        <button onclick="resetData()" class="flex items-center gap-2 bg-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-bold hover:bg-gray-300 transition-all">
+            초기화
+        </button>
+        <button onclick="window.print()" class="flex items-center gap-2 bg-[#3182f6] text-white px-6 py-3 rounded-2xl font-bold hover:bg-[#1b64da] shadow-lg transition-all">
             <i data-lucide="download" class="w-5 h-5"></i>
             PDF로 저장하기
         </button>
     </div>
 
-    <div class="resume-container print-container">
-        <!-- Header -->
+    <div class="resume-container overflow-hidden">
+        <!-- 인적사항 -->
         <header class="px-8 pt-12 pb-8 md:px-12 border-b border-gray-50">
             <div class="flex flex-col md:flex-row justify-between items-start gap-6">
                 <div class="flex-1">
-                    <h1 contenteditable="true" class="text-4xl font-black tracking-tighter mb-2">김토스</h1>
-                    <p contenteditable="true" class="text-xl text-[#3182f6] font-bold">Product Designer</p>
+                    <h1 id="user-name" contenteditable="true" class="text-4xl font-black tracking-tighter mb-2">이름</h1>
+                    <p id="user-role" contenteditable="true" class="text-xl text-[#3182f6] font-bold">지원 직무</p>
                 </div>
                 <div class="space-y-2 text-sm font-medium text-[#4e5968]">
                     <div class="flex items-center gap-2">
                         <i data-lucide="mail" class="w-4 h-4 text-[#adb5bd]"></i>
-                        <span contenteditable="true">career@toss.im</span>
+                        <span id="user-email" contenteditable="true">email@example.com</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <i data-lucide="phone" class="w-4 h-4 text-[#adb5bd]"></i>
-                        <span contenteditable="true">010-0000-0000</span>
+                        <span id="user-phone" contenteditable="true">010-0000-0000</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <i data-lucide="github" class="w-4 h-4 text-[#adb5bd]"></i>
-                        <span contenteditable="true">github.com/toss</span>
+                        <span id="user-link" contenteditable="true">github.com/username</span>
                     </div>
                 </div>
             </div>
         </header>
 
         <main class="px-8 py-10 md:px-12 space-y-12">
-            <!-- Summary -->
+            <!-- 요약 -->
             <section>
                 <h2 class="text-lg font-bold mb-3">요약</h2>
-                <div contenteditable="true" class="text-base leading-relaxed text-[#333d4b] font-medium">
-                    복잡한 금융 경험을 사용자 중심으로 단순화하는 데 몰입합니다. 수치에 기반한 설계로 비즈니스 성과를 증명합니다.
+                <div id="user-summary" contenteditable="true" class="text-base leading-relaxed text-[#333d4b] font-medium">
+                    본인의 핵심 강점을 짧게 요약해 보세요.
                 </div>
             </section>
 
-            <!-- Experience -->
-            <section id="experience-section">
+            <!-- 경력 -->
+            <section>
                 <div class="flex justify-between items-end mb-6 border-b border-gray-100 pb-2">
                     <h2 class="text-lg font-bold">경력 사항</h2>
                     <button onclick="addExperience()" class="no-print text-[#3182f6] font-bold text-xs hover:underline flex items-center gap-1">
                         <i data-lucide="plus" class="w-3 h-3"></i> 추가
                     </button>
                 </div>
-                
-                <div id="experience-list" class="space-y-10">
-                    <!-- Experience Item Template -->
-                    <div class="group relative experience-item">
-                        <button onclick="this.parentElement.remove()" class="absolute -left-10 top-0 no-print opacity-0 group-hover:opacity-100 p-2 text-red-400 hover:text-red-600 transition-all">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        </button>
-                        <div class="flex flex-col md:flex-row justify-between mb-3">
-                            <div class="flex-1">
-                                <h3 contenteditable="true" class="text-lg font-bold">토스증권</h3>
-                                <p contenteditable="true" class="text-sm text-[#4e5968] font-semibold">Product Designer</p>
-                            </div>
-                            <span contenteditable="true" class="text-right text-[#8b95a1] font-bold text-sm h-fit w-40 mt-1">2022.03 - 현재</span>
-                        </div>
-                        <ul class="space-y-2 achievement-list">
-                            <li class="flex gap-3 items-start group/ach achievement-item">
-                                <span class="mt-2.5 w-1 h-1 bg-[#3182f6] rounded-full shrink-0"></span>
-                                <span contenteditable="true" class="text-[#333d4b] text-sm leading-relaxed flex-1">주식 홈 개편을 통해 일간 활성 사용자(DAU) 20% 증가 견인</span>
-                                <button onclick="this.parentElement.remove()" class="no-print opacity-0 group-hover/ach:opacity-100 text-gray-300 hover:text-red-500 transition-all">
-                                    <i data-lucide="minus-circle" class="w-3.5 h-3.5"></i>
-                                </button>
-                            </li>
-                        </ul>
-                        <button onclick="addAchievement(this)" class="no-print mt-2 ml-4 text-xs font-bold text-[#adb5bd] hover:text-[#3182f6] flex items-center gap-1">
-                            <i data-lucide="plus" class="w-3 h-3"></i> 성과 추가
-                        </button>
-                    </div>
-                </div>
+                <div id="experience-list" class="space-y-10"></div>
             </section>
 
-            <!-- Skills -->
+            <!-- 기술 -->
             <section>
                 <div class="flex justify-between items-end mb-6 border-b border-gray-100 pb-2">
                     <h2 class="text-lg font-bold">보유 역량</h2>
@@ -170,18 +117,10 @@
                         <i data-lucide="plus" class="w-3 h-3"></i> 추가
                     </button>
                 </div>
-                <div id="skills-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="group relative bg-[#f9fafb] p-4 rounded-xl skill-item">
-                        <button onclick="this.parentElement.remove()" class="absolute -right-2 -top-2 no-print opacity-0 group-hover:opacity-100 bg-white shadow rounded-full p-1 text-red-400">
-                            <i data-lucide="trash-2" class="w-3 h-3"></i>
-                        </button>
-                        <p contenteditable="true" class="text-[10px] font-black text-[#8b95a1] uppercase tracking-wider mb-1">Design</p>
-                        <div contenteditable="true" class="text-sm font-bold text-[#191f28]">Figma, Framer, Protopie</div>
-                    </div>
-                </div>
+                <div id="skills-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </section>
 
-            <!-- Education -->
+            <!-- 학력 -->
             <section>
                 <div class="flex justify-between items-end mb-6 border-b border-gray-100 pb-2">
                     <h2 class="text-lg font-bold">학력</h2>
@@ -189,18 +128,7 @@
                         <i data-lucide="plus" class="w-3 h-3"></i> 추가
                     </button>
                 </div>
-                <div id="education-list" class="space-y-6">
-                    <div class="group relative flex flex-col md:flex-row justify-between items-start gap-2 education-item">
-                        <button onclick="this.parentElement.remove()" class="absolute -left-10 top-0 no-print opacity-0 group-hover:opacity-100 p-2 text-red-400">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        </button>
-                        <div class="flex-1">
-                            <h3 contenteditable="true" class="text-base font-bold">토스대학교</h3>
-                            <p contenteditable="true" class="text-sm text-[#4e5968]">산업디자인학과 졸업</p>
-                        </div>
-                        <span contenteditable="true" class="text-right text-[#8b95a1] font-bold text-sm w-40 mt-1">2016.03 - 2022.02</span>
-                    </div>
-                </div>
+                <div id="education-list" class="space-y-6"></div>
             </section>
         </main>
 
@@ -210,88 +138,181 @@
     </div>
 
     <script>
-        // Initialize Icons
-        lucide.createIcons();
+        const STORAGE_KEY = 'toss_resume_v1';
 
-        // Helper: Create achievement item
-        function createAchievement() {
-            const li = document.createElement('li');
-            li.className = 'flex gap-3 items-start group/ach achievement-item';
-            li.innerHTML = `
-                <span class="mt-2.5 w-1 h-1 bg-[#3182f6] rounded-full shrink-0"></span>
-                <span contenteditable="true" class="text-[#333d4b] text-sm leading-relaxed flex-1">새로운 성과를 입력하세요</span>
-                <button onclick="this.parentElement.remove()" class="no-print opacity-0 group-hover/ach:opacity-100 text-gray-300 hover:text-red-500 transition-all">
-                    <i data-lucide="minus-circle" class="w-3.5 h-3.5"></i>
-                </button>
-            `;
-            return li;
-        }
+        // 데이터 구조 초기화
+        let resumeData = {
+            name: "이름",
+            role: "지원 직무",
+            email: "email@example.com",
+            phone: "010-0000-0000",
+            link: "github.com/username",
+            summary: "본인의 핵심 강점을 짧게 요약해 보세요.",
+            experiences: [],
+            skills: [],
+            educations: []
+        };
 
-        function addAchievement(btn) {
-            const list = btn.previousElementSibling;
-            const newItem = createAchievement();
-            list.appendChild(newItem);
+        // 초기 실행
+        window.onload = () => {
+            loadFromStorage();
             lucide.createIcons();
-            newItem.querySelector('[contenteditable]').focus();
+            
+            // 모든 편집 가능 영역에 자동 저장 이벤트 연결
+            document.addEventListener('input', () => {
+                saveToStorage();
+            });
+        };
+
+        function saveToStorage() {
+            resumeData.name = document.getElementById('user-name').innerText;
+            resumeData.role = document.getElementById('user-role').innerText;
+            resumeData.email = document.getElementById('user-email').innerText;
+            resumeData.phone = document.getElementById('user-phone').innerText;
+            resumeData.link = document.getElementById('user-link').innerText;
+            resumeData.summary = document.getElementById('user-summary').innerText;
+
+            // 경력 데이터 수집
+            resumeData.experiences = Array.from(document.querySelectorAll('.experience-item')).map(item => ({
+                company: item.querySelector('.comp-name').innerText,
+                role: item.querySelector('.comp-role').innerText,
+                period: item.querySelector('.comp-period').innerText,
+                achievements: Array.from(item.querySelectorAll('.ach-text')).map(ach => ach.innerText)
+            }));
+
+            // 기술 데이터 수집
+            resumeData.skills = Array.from(document.querySelectorAll('.skill-item')).map(item => ({
+                category: item.querySelector('.skill-cat').innerText,
+                items: item.querySelector('.skill-list').innerText
+            }));
+
+            // 학력 데이터 수집
+            resumeData.educations = Array.from(document.querySelectorAll('.education-item')).map(item => ({
+                school: item.querySelector('.edu-school').innerText,
+                major: item.querySelector('.edu-major').innerText,
+                period: item.querySelector('.edu-period').innerText
+            }));
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(resumeData));
         }
 
-        function addExperience() {
-            const container = document.getElementById('experience-list');
+        function loadFromStorage() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                resumeData = JSON.parse(saved);
+            }
+
+            document.getElementById('user-name').innerText = resumeData.name;
+            document.getElementById('user-role').innerText = resumeData.role;
+            document.getElementById('user-email').innerText = resumeData.email;
+            document.getElementById('user-phone').innerText = resumeData.phone;
+            document.getElementById('user-link').innerText = resumeData.link;
+            document.getElementById('user-summary').innerText = resumeData.summary;
+
+            // 리스트 초기화 후 렌더링
+            document.getElementById('experience-list').innerHTML = '';
+            resumeData.experiences.forEach(exp => renderExperience(exp));
+
+            document.getElementById('skills-list').innerHTML = '';
+            resumeData.skills.forEach(skill => renderSkill(skill));
+
+            document.getElementById('education-list').innerHTML = '';
+            resumeData.educations.forEach(edu => renderEducation(edu));
+        }
+
+        function resetData() {
+            if (confirm('모든 내용을 초기화할까요?')) {
+                localStorage.removeItem(STORAGE_KEY);
+                location.reload();
+            }
+        }
+
+        // --- 렌더링 함수들 ---
+
+        function renderExperience(data = { company: '회사명', role: '직무', period: '기간', achievements: ['성과'] }) {
             const div = document.createElement('div');
             div.className = 'group relative experience-item';
             div.innerHTML = `
-                <button onclick="this.parentElement.remove()" class="absolute -left-10 top-0 no-print opacity-0 group-hover:opacity-100 p-2 text-red-400 hover:text-red-600 transition-all">
+                <button onclick="this.parentElement.remove(); saveToStorage();" class="absolute -left-10 top-0 no-print opacity-0 group-hover:opacity-100 p-2 text-red-400">
                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                 </button>
                 <div class="flex flex-col md:flex-row justify-between mb-3">
                     <div class="flex-1">
-                        <h3 contenteditable="true" class="text-lg font-bold">회사명</h3>
-                        <p contenteditable="true" class="text-sm text-[#4e5968] font-semibold">직무</p>
+                        <h3 contenteditable="true" class="text-lg font-bold comp-name">${data.company}</h3>
+                        <p contenteditable="true" class="text-sm text-[#4e5968] font-semibold comp-role">${data.role}</p>
                     </div>
-                    <span contenteditable="true" class="text-right text-[#8b95a1] font-bold text-sm h-fit w-40 mt-1">기간 입력</span>
+                    <span contenteditable="true" class="text-right text-[#8b95a1] font-bold text-sm h-fit w-40 mt-1 comp-period">${data.period}</span>
                 </div>
-                <ul class="space-y-2 achievement-list"></ul>
-                <button onclick="addAchievement(this)" class="no-print mt-2 ml-4 text-xs font-bold text-[#adb5bd] hover:text-[#3182f6] flex items-center gap-1">
+                <ul class="space-y-2 ach-container">
+                    ${data.achievements.map(ach => `
+                        <li class="flex gap-3 items-start group/ach">
+                            <span class="mt-2.5 w-1 h-1 bg-[#3182f6] rounded-full shrink-0"></span>
+                            <span contenteditable="true" class="text-[#333d4b] text-sm leading-relaxed flex-1 ach-text">${ach}</span>
+                            <button onclick="this.parentElement.remove(); saveToStorage();" class="no-print opacity-0 group-hover/ach:opacity-100 text-gray-300 hover:text-red-500">
+                                <i data-lucide="minus-circle" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </li>
+                    `).join('')}
+                </ul>
+                <button onclick="addAchRow(this)" class="no-print mt-2 ml-4 text-xs font-bold text-[#adb5bd] hover:text-[#3182f6] flex items-center gap-1">
                     <i data-lucide="plus" class="w-3 h-3"></i> 성과 추가
                 </button>
             `;
-            container.appendChild(div);
-            addAchievement(div.querySelector('.no-print')); // 첫 성과 자동 추가
+            document.getElementById('experience-list').appendChild(div);
             lucide.createIcons();
         }
 
-        function addSkill() {
-            const container = document.getElementById('skills-list');
+        function addExperience() { renderExperience(); saveToStorage(); }
+
+        function addAchRow(btn) {
+            const li = document.createElement('li');
+            li.className = 'flex gap-3 items-start group/ach';
+            li.innerHTML = `
+                <span class="mt-2.5 w-1 h-1 bg-[#3182f6] rounded-full shrink-0"></span>
+                <span contenteditable="true" class="text-[#333d4b] text-sm leading-relaxed flex-1 ach-text">성과를 입력하세요</span>
+                <button onclick="this.parentElement.remove(); saveToStorage();" class="no-print opacity-0 group-hover/ach:opacity-100 text-gray-300 hover:text-red-500">
+                    <i data-lucide="minus-circle" class="w-3.5 h-3.5"></i>
+                </button>
+            `;
+            btn.previousElementSibling.appendChild(li);
+            lucide.createIcons();
+            saveToStorage();
+        }
+
+        function renderSkill(data = { category: 'CATEGORY', items: '기술 목록' }) {
             const div = document.createElement('div');
             div.className = 'group relative bg-[#f9fafb] p-4 rounded-xl skill-item';
             div.innerHTML = `
-                <button onclick="this.parentElement.remove()" class="absolute -right-2 -top-2 no-print opacity-0 group-hover:opacity-100 bg-white shadow rounded-full p-1 text-red-400">
+                <button onclick="this.parentElement.remove(); saveToStorage();" class="absolute -right-2 -top-2 no-print opacity-0 group-hover:opacity-100 bg-white shadow rounded-full p-1 text-red-400">
                     <i data-lucide="trash-2" class="w-3 h-3"></i>
                 </button>
-                <p contenteditable="true" class="text-[10px] font-black text-[#8b95a1] uppercase tracking-wider mb-1">CATEGORY</p>
-                <div contenteditable="true" class="text-sm font-bold text-[#191f28]">기술 목록</div>
+                <p contenteditable="true" class="text-[10px] font-black text-[#8b95a1] uppercase tracking-wider mb-1 skill-cat">${data.category}</p>
+                <div contenteditable="true" class="text-sm font-bold text-[#191f28] skill-list">${data.items}</div>
             `;
-            container.appendChild(div);
+            document.getElementById('skills-list').appendChild(div);
             lucide.createIcons();
         }
 
-        function addEducation() {
-            const container = document.getElementById('education-list');
+        function addSkill() { renderSkill(); saveToStorage(); }
+
+        function renderEducation(data = { school: '학교명', major: '전공', period: '기간' }) {
             const div = document.createElement('div');
             div.className = 'group relative flex flex-col md:flex-row justify-between items-start gap-2 education-item';
             div.innerHTML = `
-                <button onclick="this.parentElement.remove()" class="absolute -left-10 top-0 no-print opacity-0 group-hover:opacity-100 p-2 text-red-400">
+                <button onclick="this.parentElement.remove(); saveToStorage();" class="absolute -left-10 top-0 no-print opacity-0 group-hover:opacity-100 p-2 text-red-400">
                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                 </button>
                 <div class="flex-1">
-                    <h3 contenteditable="true" class="text-base font-bold">학교명</h3>
-                    <p contenteditable="true" class="text-sm text-[#4e5968]">전공</p>
+                    <h3 contenteditable="true" class="text-base font-bold edu-school">${data.school}</h3>
+                    <p contenteditable="true" class="text-sm text-[#4e5968] edu-major">${data.major}</p>
                 </div>
-                <span contenteditable="true" class="text-right text-[#8b95a1] font-bold text-sm w-40 mt-1">기간</span>
+                <span contenteditable="true" class="text-right text-[#8b95a1] font-bold text-sm w-40 mt-1 edu-period">${data.period}</span>
             `;
-            container.appendChild(div);
+            document.getElementById('education-list').appendChild(div);
             lucide.createIcons();
         }
+
+        function addEducation() { renderEducation(); saveToStorage(); }
     </script>
 </body>
 </html>
